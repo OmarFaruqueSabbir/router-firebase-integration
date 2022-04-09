@@ -1,11 +1,14 @@
-import userEvent from '@testing-library/user-event';
+import { getAuth,signOut } from 'firebase/auth';
 import React from 'react';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { Link } from 'react-router-dom';
-import useFirebase from '../../hooks/useFirebase';
+import app from '../../firebase.init';
 import './Header.css'
 
+const auth = getAuth(app);
+
 const Header = () => {
-    const { user, signOutWithGoogle } = useFirebase();
+    const [user] = useAuthState(auth);
     return (
         <div className='header'>
             <nav>
@@ -16,7 +19,7 @@ const Header = () => {
                 <span>{user?.displayName && user.displayName}</span>
                 {
                     user?.uid ?
-                        <button onClick={signOutWithGoogle}>SignOut</button>
+                        <button onClick={()=> signOut(auth)}>SignOut</button>
                         :
                         <Link to="/login">Login</Link>
                 }
